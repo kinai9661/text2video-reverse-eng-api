@@ -1,69 +1,128 @@
-# Text2Video API - 圖片上傳支持版
+# Text2Video 2026 - AI 視頻生成平台
 
-支援 10+ AI 影片生成模型，現已支持 **圖片轉影片 (Image-to-Video)** 功能！
+🎉 **v2.0** - 使用 2026 年最新 AI 模型生成高質量視頻
 
-## ✨ 新增功能
+## ✨ 特性
 
-### 🖼 圖片轉影片 (Image-to-Video)
-- 上傳首幀圖片，AI 自動生成動態影片
-- 支持 PNG, JPG, WebP，最大 10MB
-- 7 個模型支持圖片輸入：
-  - ✅ Kling 1.6/1.5
-  - ✅ Runway Gen-3/Gen-4
-  - ✅ Veo 3/3.1
-  - ✅ Luma Ray 3
+### 🏆 12+ 頂級模型
+- **Kling 2.6** - 最佳動畫對話 (Elo 1247+)
+- **Runway Gen-4.5** - 頂級專業控制
+- **Google Veo 3.1** - 最佳真實感
+- **Sora 2** - OpenAI 最新，動態場景
+- **Seedance 1.5 Pro** - 極速生成
+- 更多...
 
-### 🎯 使用場景
-- 產品照片→動態展示
-- 靜態海報→動態廣告
-- 人物照片→表情動作
-- 風景照片→鏡頭運動
+### 🎨 智能功能
+- ✅ Text-to-Video（文字生成視頻）
+- ✅ Image-to-Video（圖片生成視頻）
+- ✅ 模型分類篩選（頂級/快速/特色/入門）
+- ✅ 實時進度追蹤
+- ✅ 完整錯誤處理
+- ✅ 4 標籤頁查看（影片/API/請求/響應）
 
-## 🚀 快速部署
+## 🚀 快速開始
 
-```bash
+### 1. 安裝依賴
+\`\`\`bash
 npm install
+\`\`\`
+
+### 2. 配置環境變數
+\`\`\`bash
 cp .env.local.example .env.local
-# 填入 APPMEDO_API_KEY
+# 編輯 .env.local，填入你的 SUPABASE_TOKEN
+\`\`\`
+
+### 3. 啟動開發服務器
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
-## 📋 使用指南
-
-### Text-to-Video
-1. 選擇模型
-2. 輸入提示詞
-3. 設定參數
-4. 生成
-
-### Image-to-Video
-1. 選擇帶 🖼 的模型
-2. 上傳圖片 (<10MB)
-3. 描述運動效果
-4. 生成
-
-## 🎨 提示詞範例
-
-### 文字生成
-```
-陽光下微笑的女人，長髮隨風飄動，背景海灘，電影級質感
-```
-
-### 圖片生成
-```
-❌ "一個女人在海灘微笑"
-✅ "鏡頭緩慢推進，人物微笑點頭，頭髮輕輕飄動"
-```
+訪問 http://localhost:3000
 
 ## 📊 模型對比
 
-| 模型 | 時長 | 圖片 | 特色 |
-|------|-----|------|------|
-| Kling 1.6 | 10s | ✅ | 中文+圖片最佳 |
-| Runway Gen-4 | 10s | ✅ | 圖片電影級 4K |
-| Veo 3.1 | 8s | ✅ | 圖片+音頻 |
-| Luma Ray 3 | 5s | ✅ | 圖片 3D |
+| 模型 | 最佳用途 | 時長 | 圖片支持 | 類別 |
+|------|---------|------|---------|------|
+| Kling 2.6 | 動畫對話 | 10s | ✅ | 頂級 |
+| Runway 4.5 | 專業控制 | 10s | ✅ | 頂級 |
+| Veo 3.1 | 真實人物 | 8s | ✅ | 頂級 |
+| Sora 2 | 動態場景 | 10s | ✅ | 頂級 |
+| Seedance | 快速原型 | 6s | ✅ | 快速 |
+| Luma Ray 3 | 電影HDR | 5s | ✅ | 特色 |
 
-完整文檔請查看專案內 README。
+## 🧪 API 測試
 
-MIT License | Made by kinai9661
+\`\`\`bash
+curl -X POST "https://app-9kpm005bczy9-vitesandbox.sandbox.medo.dev/functions/v1/video-api/v1/videos/text2video" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model_name": "kling-v2.6-master",
+    "prompt": "A beautiful sunset over the ocean",
+    "aspect_ratio": "16:9",
+    "duration": "5"
+  }'
+\`\`\`
+
+## 📦 部署到 Vercel
+
+\`\`\`bash
+# 方法 1: CLI
+vercel deploy
+
+# 方法 2: GitHub
+git push
+# 在 vercel.com 連接 repo
+\`\`\`
+
+記得在 Vercel 設置環境變數: \`SUPABASE_TOKEN\`
+
+## 💡 使用建議
+
+### 按需求選擇模型
+
+**商業廣告**: Veo 3.1（最佳真實感）
+**動畫故事**: Kling 2.6（對話自然）
+**專業項目**: Runway Gen-4.5（精確控制）
+**快速原型**: Seedance 1.5 Pro（極速）
+**電影級**: Luma Ray 3（HDR）
+
+### 提示詞技巧
+1. 詳細描述場景和動作
+2. 包含光線、運鏡方向
+3. 指定風格和情緒
+4. 圖片模式描述運動而非內容
+
+## 🐛 故障排除
+
+### 401 Unauthorized
+→ 檢查 SUPABASE_TOKEN 是否正確
+
+### 404 Not Found
+→ 確認 API URL 無誤
+
+### 生成失敗
+→ 查看 Console 日誌和響應標籤
+
+## 📈 版本歷史
+
+### v2.0.0 (2026-02-12)
+- ✅ 新增 12 個 2026 最新模型
+- ✅ 智能模型分類篩選
+- ✅ 徽章系統（TOP/NEW/⚡/🎬）
+- ✅ UI/UX 全面升級
+- ✅ 完整錯誤處理
+
+### v1.3.0
+- 正確 API 端點
+- Supabase Token 認證
+- 模型映射表
+
+## 📄 License
+
+MIT License
+
+---
+
+Made with ❤️ by kinai9661

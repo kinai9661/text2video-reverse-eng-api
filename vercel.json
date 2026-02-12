@@ -3,9 +3,5 @@
     "src/app/api/**/*.ts": {
       "maxDuration": 30
     }
-  },
-  "rewrites": [
-    { "source": "/v1/videos/text2video", "destination": "/api/videos/text2video" },
-    { "source": "/v1/videos/tasks/:taskId", "destination": "/api/videos/tasks/:taskId" }
-  ]
+  }
 }
