@@ -1,1 +1,118 @@
-import{NextRequest,NextResponse}from'next/server';const U='https://app-9kpm005bczy9-vitesandbox.sandbox.medo.dev/functions/v1/video-api/v1/videos/text2video';const S={'kling-2.6':'kling','kling-1.6':'kling','runway-gen4.5':'runway','runway-gen3':'runway','veo-3.1':'veo','sora-2':'sora','default':'kling'};const V={'kling-2.6':'kling-v1','runway-gen4.5':'gen4','veo-3.1':'veo3.1','default':'kling-v1'};const F={'kling-2.6':'kling-v2.6-master','runway-gen4.5':'runway-gen4.5-turbo','veo-3.1':'veo-3.1-master','default':'kling-v2.6-master'};const A=1;const M=A===1?S:A===2?V:F;const N=A===1?'SIMPLE':A===2?'VERSIONED':'FULL';export async function POST(req:NextRequest){try{const b=await req.json();const t=process.env.SUPABASE_TOKEN;if(!t||t==='your-supabase-token-here'){return NextResponse.json({error:{code:'missing_token',message:'Token not configured'}},{status:500})}const r:any={model_name:M[b.model]||M['default'],prompt:b.prompt,aspect_ratio:b.aspect_ratio||'16:9',duration:String(b.seconds||5)};if(b.image)r.image_url=b.image;console.log('🚀',U,'|',N,'|',b.model,'→',r.model_name);const s=Date.now();const res=await fetch(U,{method:'POST',headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},body:JSON.stringify(r)});const rt=Date.now()-s;console.log('⏱',rt+'ms','|',res.status);if(!res.ok){const e=await res.text();console.error('❌',res.status,e);if(res.status===404){console.error('💡 Try: ACTIVE_SCHEME='+(A===3?1:A+1)+' or npm run detect')}return NextResponse.json({error:{code:`api_error_${res.status}`,message:`HTTP ${res.status}`,status:res.status,current_scheme:N,model_tried:r.model_name,suggestion:res.status===404?`Change ACTIVE_SCHEME to ${A===3?1:A+1} or run: npm run detect`:null}},{status:res.status})}const d=await res.json();console.log('✅',d.task_id||d.id);return NextResponse.json({id:d.task_id||d.id||`task_${Date.now()}`,status:d.status||'pending',video_url:d.video_url||null,model:r.model_name,scheme:N,metadata:d})}catch(err:any){console.error('❌',err.message);return NextResponse.json({error:{code:'internal_error',message:err.message}},{status:500})}}
+import { NextRequest, NextResponse } from 'next/server';
+
+const VIDEO_API_URL = 'https://app-9kpm005bczy9-vitesandbox.sandbox.medo.dev/functions/v1/video-api/v1/videos/text2video';
+
+// 模型映射方案
+const SIMPLE_MODELS: Record<string, string> = {
+  'kling-2.6': 'kling',
+  'kling-1.6': 'kling',
+  'runway-gen4.5': 'runway',
+  'runway-gen3': 'runway',
+  'veo-3.1': 'veo',
+  'sora-2': 'sora',
+  'default': 'kling'
+};
+
+const VERSIONED_MODELS: Record<string, string> = {
+  'kling-2.6': 'kling-v1',
+  'runway-gen4.5': 'gen4',
+  'veo-3.1': 'veo3.1',
+  'default': 'kling-v1'
+};
+
+const FULL_MODELS: Record<string, string> = {
+  'kling-2.6': 'kling-v2.6-master',
+  'runway-gen4.5': 'runway-gen4.5-turbo',
+  'veo-3.1': 'veo-3.1-master',
+  'default': 'kling-v2.6-master'
+};
+
+// 🔧 選擇方案: 1, 2, 或 3
+const ACTIVE_SCHEME: number = 1;
+
+// 根據方案選擇映射表
+function getModelMap() {
+  if (ACTIVE_SCHEME === 1) return SIMPLE_MODELS;
+  if (ACTIVE_SCHEME === 2) return VERSIONED_MODELS;
+  return FULL_MODELS;
+}
+
+const modelMap = getModelMap();
+const SCHEME_NAME = ACTIVE_SCHEME === 1 ? 'SIMPLE' : ACTIVE_SCHEME === 2 ? 'VERSIONED' : 'FULL';
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const token = process.env.SUPABASE_TOKEN;
+
+    if (!token || token === 'your-supabase-token-here') {
+      return NextResponse.json(
+        { error: { code: 'missing_token', message: 'Token not configured' } },
+        { status: 500 }
+      );
+    }
+
+    const requestBody: any = {
+      model_name: modelMap[body.model] || modelMap['default'],
+      prompt: body.prompt,
+      aspect_ratio: body.aspect_ratio || '16:9',
+      duration: String(body.seconds || 5)
+    };
+
+    if (body.image) requestBody.image_url = body.image;
+
+    console.log('🚀', VIDEO_API_URL, '|', SCHEME_NAME, '|', body.model, '→', requestBody.model_name);
+
+    const startTime = Date.now();
+    const response = await fetch(VIDEO_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const responseTime = Date.now() - startTime;
+    console.log('⏱', responseTime + 'ms', '|', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌', response.status, errorText);
+
+      if (response.status === 404) {
+        console.error('💡 Try: ACTIVE_SCHEME = ' + (ACTIVE_SCHEME === 3 ? 1 : ACTIVE_SCHEME + 1) + ' or npm run detect');
+      }
+
+      return NextResponse.json({
+        error: {
+          code: `api_error_${response.status}`,
+          message: `HTTP ${response.status}`,
+          status: response.status,
+          current_scheme: SCHEME_NAME,
+          model_tried: requestBody.model_name,
+          suggestion: response.status === 404 ? `Change ACTIVE_SCHEME to ${ACTIVE_SCHEME === 3 ? 1 : ACTIVE_SCHEME + 1} or run: npm run detect` : null
+        }
+      }, { status: response.status });
+    }
+
+    const data = await response.json();
+    console.log('✅', data.task_id || data.id);
+
+    return NextResponse.json({
+      id: data.task_id || data.id || `task_${Date.now()}`,
+      status: data.status || 'pending',
+      video_url: data.video_url || null,
+      model: requestBody.model_name,
+      scheme: SCHEME_NAME,
+      metadata: data
+    });
+
+  } catch (error: any) {
+    console.error('❌', error.message);
+    return NextResponse.json(
+      { error: { code: 'internal_error', message: error.message } },
+      { status: 500 }
+    );
+  }
+}
