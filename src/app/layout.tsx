@@ -2,8 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Text2Video API - 10+ AI 模型',
-  description: 'Text to Video Generation with 10+ AI Models | OpenAI Compatible',
+  title: 'Text2Video API - 圖片上傳支持',
+  description: 'Text/Image to Video Generation with 10+ AI Models',
 }
 
 export default function RootLayout({

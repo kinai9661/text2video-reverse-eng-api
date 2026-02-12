@@ -6,9 +6,9 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
-            Text2Video API 逆向工程
+            Text2Video API - Image Support
           </h1>
-          <p className="text-white/90">OpenAI Compatible | 支援 10+ AI 模型 | 實時 API 分析</p>
+          <p className="text-white/90">支援文字與圖片生成 | 10+ AI 模型</p>
         </div>
         <VideoGenerator />
       </div>

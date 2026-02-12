@@ -14,12 +14,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const requestBody = {
+    const requestBody: any = {
       prompt: body.prompt,
       model: body.model || 'kling-1.6',
       seconds: body.seconds || 5,
       aspect_ratio: body.aspect_ratio || '16:9'
     };
+
+    // 如果有圖片，添加到請求
+    if (body.image) {
+      requestBody.image = body.image;
+      requestBody.generation_mode = body.generation_mode || 'image2video';
+    }
 
     const startTime = Date.now();
     const response = await fetch(APPMEDO_API_URL, {
@@ -41,10 +47,12 @@ export async function POST(req: NextRequest) {
       model: requestBody.model,
       status: data.status || 'pending',
       video_url: data.video_url || null,
+      generation_mode: requestBody.generation_mode || 'text2video',
       metadata: {
         prompt: requestBody.prompt,
         duration: requestBody.seconds,
         aspect_ratio: requestBody.aspect_ratio,
+        has_image: !!body.image,
         response_time_ms: responseTime,
         raw_response: data
       }
