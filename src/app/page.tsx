@@ -1,5 +1,4 @@
 import VideoGenerator from '@/components/VideoGenerator'
-import './globals.css'
 
 export default function Home() {
   return (

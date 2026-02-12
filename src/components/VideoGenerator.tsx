@@ -1,12 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
-import { Loader2, Download, Copy } from 'lucide-react'
 
 export default function VideoGenerator() {
   const [prompt, setPrompt] = useState('')
@@ -19,6 +13,7 @@ export default function VideoGenerator() {
   const [apiResponse, setApiResponse] = useState<any>(null)
   const [requestData, setRequestData] = useState<any>(null)
   const [apiInfo, setApiInfo] = useState<any>(null)
+  const [activeTab, setActiveTab] = useState('video')
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -49,7 +44,6 @@ export default function VideoGenerator() {
 
       if (data.id) {
         setTaskId(data.id)
-        // 開始輪詢任務狀態
         pollTaskStatus(data.id)
       }
 
@@ -66,7 +60,7 @@ export default function VideoGenerator() {
 
   const pollTaskStatus = async (id: string) => {
     let attempts = 0
-    const maxAttempts = 60 // 5 分鐘
+    const maxAttempts = 60
 
     const interval = setInterval(async () => {
       attempts++
@@ -96,28 +90,26 @@ export default function VideoGenerator() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 左側：輸入 */}
-      <Card className="bg-white/95 backdrop-blur">
-        <CardHeader>
-          <CardTitle>生成參數</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="bg-white/95 backdrop-blur rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-semibold mb-4">生成參數</h2>
+        <div className="space-y-4">
           <div>
-            <Label>提示詞</Label>
-            <Input
+            <label className="block text-sm font-medium mb-1">提示詞</label>
+            <input
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="描述你想生成的影片..."
-              className="mt-1"
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-purple-600 focus:outline-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>模型</Label>
+              <label className="block text-sm font-medium mb-1">模型</label>
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="kling-1.6">Kling 1.6</option>
                 <option value="kling-1.5">Kling 1.5</option>
@@ -126,24 +118,24 @@ export default function VideoGenerator() {
             </div>
 
             <div>
-              <Label>時長 (秒)</Label>
-              <Input
+              <label className="block text-sm font-medium mb-1">時長 (秒)</label>
+              <input
                 type="number"
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
                 min={3}
                 max={10}
-                className="mt-1"
+                className="w-full px-3 py-2 border rounded-md"
               />
             </div>
           </div>
 
           <div>
-            <Label>畫面比例</Label>
+            <label className="block text-sm font-medium mb-1">畫面比例</label>
             <select
               value={aspectRatio}
               onChange={(e) => setAspectRatio(e.target.value)}
-              className="w-full mt-1 px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 border rounded-md"
             >
               <option value="16:9">16:9 (橫屏)</option>
               <option value="9:16">9:16 (豎屏)</option>
@@ -151,41 +143,60 @@ export default function VideoGenerator() {
             </select>
           </div>
 
-          <Button
+          <button
             onClick={handleGenerate}
             disabled={loading || !prompt}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
                 生成中...
-              </>
+              </span>
             ) : (
               '生成影片'
             )}
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </div>
 
       {/* 右側：輸出 */}
-      <Card className="bg-white/95 backdrop-blur">
-        <CardHeader>
-          <CardTitle>輸出結果</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="video" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="video">影片</TabsTrigger>
-              <TabsTrigger value="api">API 資訊</TabsTrigger>
-              <TabsTrigger value="request">請求</TabsTrigger>
-              <TabsTrigger value="response">響應</TabsTrigger>
-            </TabsList>
+      <div className="bg-white/95 backdrop-blur rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-semibold mb-4">輸出結果</h2>
 
-            <TabsContent value="video" className="mt-4">
+        <div className="mb-4">
+          <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 w-full">
+            {[
+              { key: 'video', label: '影片' },
+              { key: 'api', label: 'API 資訊' },
+              { key: 'request', label: '請求' },
+              { key: 'response', label: '響應' }
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all flex-1 ${
+                  activeTab === tab.key ? 'bg-white shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          {activeTab === 'video' && (
+            <div>
               {loading && (
                 <div className="flex flex-col items-center justify-center py-12">
-                  <Loader2 className="h-12 w-12 animate-spin text-purple-600 mb-4" />
+                  <svg className="animate-spin h-12 w-12 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
                   <p className="text-gray-600">影片生成中，請稍候...</p>
                   {taskId && <p className="text-sm text-gray-500 mt-2">任務 ID: {taskId}</p>}
                 </div>
@@ -199,24 +210,18 @@ export default function VideoGenerator() {
                     className="w-full rounded-lg border"
                   />
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <button
                       onClick={() => window.open(videoUrl, '_blank')}
-                      className="flex-1"
+                      className="flex-1 border px-4 py-2 rounded-md hover:bg-gray-50 flex items-center justify-center text-sm"
                     >
-                      <Download className="mr-2 h-4 w-4" />
-                      下載
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
+                      ⬇ 下載
+                    </button>
+                    <button
                       onClick={() => navigator.clipboard.writeText(videoUrl)}
-                      className="flex-1"
+                      className="flex-1 border px-4 py-2 rounded-md hover:bg-gray-50 flex items-center justify-center text-sm"
                     >
-                      <Copy className="mr-2 h-4 w-4" />
-                      複製連結
-                    </Button>
+                      📋 複製連結
+                    </button>
                   </div>
                 </div>
               )}
@@ -226,47 +231,41 @@ export default function VideoGenerator() {
                   輸入提示詞並點擊生成按鈕
                 </p>
               )}
-            </TabsContent>
+            </div>
+          )}
 
-            <TabsContent value="api" className="mt-4">
-              {apiInfo && (
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between py-2 border-b">
-                    <span className="font-semibold">狀態碼:</span>
-                    <span className={apiInfo.status === 200 ? 'text-green-600' : 'text-red-600'}>
-                      {apiInfo.status} {apiInfo.statusText}
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b">
-                    <span className="font-semibold">響應時間:</span>
-                    <span>{apiInfo.responseTime}</span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b">
-                    <span className="font-semibold">端點:</span>
-                    <span className="text-xs">{apiInfo.url}</span>
-                  </div>
-                </div>
-              )}
-            </TabsContent>
+          {activeTab === 'api' && apiInfo && (
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-semibold">狀態碼:</span>
+                <span className={apiInfo.status === 200 ? 'text-green-600' : 'text-red-600'}>
+                  {apiInfo.status} {apiInfo.statusText}
+                </span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-semibold">響應時間:</span>
+                <span>{apiInfo.responseTime}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-semibold">端點:</span>
+                <span className="text-xs break-all">{apiInfo.url}</span>
+              </div>
+            </div>
+          )}
 
-            <TabsContent value="request" className="mt-4">
-              {requestData && (
-                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
-                  {JSON.stringify(requestData, null, 2)}
-                </pre>
-              )}
-            </TabsContent>
+          {activeTab === 'request' && requestData && (
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
+              {JSON.stringify(requestData, null, 2)}
+            </pre>
+          )}
 
-            <TabsContent value="response" className="mt-4">
-              {apiResponse && (
-                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
-                  {JSON.stringify(apiResponse, null, 2)}
-                </pre>
-              )}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+          {activeTab === 'response' && apiResponse && (
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
+              {JSON.stringify(apiResponse, null, 2)}
+            </pre>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

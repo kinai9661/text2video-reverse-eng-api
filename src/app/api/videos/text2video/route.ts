@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
     const responseTime = Date.now() - startTime;
     const data = await response.json();
 
-    // OpenAI 格式轉換
     const openaiFormat = {
       id: data.task_id || data.id || `task_${Date.now()}`,
       object: 'video.generation',
@@ -57,24 +56,8 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     return NextResponse.json(
-      { 
-        error: { 
-          code: 'internal_error', 
-          message: error.message || 'Unknown error occurred' 
-        } 
-      },
+      { error: { code: 'internal_error', message: error.message } },
       { status: 500 }
     );
   }
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, { 
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Authorization, Content-Type'
-    }
-  });
 }

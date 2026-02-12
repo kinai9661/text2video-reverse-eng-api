@@ -15,7 +15,6 @@ export async function GET(
       );
     }
 
-    // 查詢任務狀態（需根據實際 API 調整）
     const statusUrl = `https://api-integrations.appmedo.com/app-7r29gu4xs001/api-6LeB8Qe4rWGY/v1/videos/tasks/${taskId}`;
 
     const response = await fetch(statusUrl, {
