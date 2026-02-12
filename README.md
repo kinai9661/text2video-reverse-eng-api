@@ -1,60 +1,38 @@
-# Text2Video 2026 - Fixed Version
+# Text2Video 2026 - 完整版
 
-## 🔧 包含 404 錯誤修復
-
-### 快速開始
+## 🚀 快速開始
 
 \`\`\`bash
 npm install
 cp .env.local.example .env.local
 # 編輯 .env.local 填入 SUPABASE_TOKEN
+npm run detect  # 自動檢測模型
 npm run dev
 \`\`\`
 
-### 🆘 遇到 404 錯誤？
+## 🔧 遇到 404？
 
-編輯 \`src/app/api/videos/text2video/route.ts\`:
-
-\`\`\`typescript
-// 第 20 行左右
-const USE_BASIC_MODELS = true;  // 改為 true
+### 方法 1: 自動檢測
+\`\`\`bash
+npm run detect
 \`\`\`
 
-保存並重啟。
+### 方法 2: 切換方案
+編輯 \`src/app/api/videos/text2video/route.ts\`:
+\`\`\`typescript
+const ACTIVE_SCHEME = 1;  // 改為 1, 2, 或 3
+\`\`\`
 
-### 📋 配置步驟
+## 📊 3 種方案
 
-1. **創建 .env.local**
-   \`\`\`bash
-   cp .env.local.example .env.local
-   \`\`\`
+- **1 = SIMPLE**: kling, runway, veo
+- **2 = VERSIONED**: kling-v1, gen4, veo3.1
+- **3 = FULL**: kling-v2.6-master
 
-2. **獲取 Token**
-   - 訪問 https://supabase.com/dashboard
-   - Settings > API
-   - 複製 anon public key
+## 📝 配置
 
-3. **填入 Token**
-   \`\`\`
-   SUPABASE_TOKEN=你的真實token
-   \`\`\`
-
-4. **重啟**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
-
-### 🧪 測試
-
-打開 http://localhost:3000
-
-按 F12 查看 Console 日誌
-
-### 💡 特性
-
-- ✅ 增強錯誤日誌
-- ✅ 404 自動診斷
-- ✅ 雙模型映射（完整/簡化）
-- ✅ 一鍵切換修復
+1. 獲取 Token: https://supabase.com/dashboard
+2. Settings > API > 複製 anon key
+3. 填入 .env.local
 
 MIT License

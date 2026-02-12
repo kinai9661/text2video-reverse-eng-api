@@ -1,12 +1,1 @@
-import { NextRequest, NextResponse } from 'next/server';
-
-export async function GET(req: NextRequest, { params }: { params: { taskId: string } }) {
-  const token = process.env.SUPABASE_TOKEN;
-  const url = `https://app-9kpm005bczy9-vitesandbox.sandbox.medo.dev/functions/v1/video-api/v1/videos/tasks/${params.taskId}`;
-
-  const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-  if (!response.ok) return NextResponse.json({ id: params.taskId, status: 'error' });
-
-  const data = await response.json();
-  return NextResponse.json({ id: params.taskId, status: data.status, video_url: data.video_url });
-}
+import{NextRequest,NextResponse}from'next/server';const B='https://app-9kpm005bczy9-vitesandbox.sandbox.medo.dev/functions/v1/video-api/v1/videos/tasks';export async function GET(req:NextRequest,{params}:{params:{taskId:string}}){try{const t=process.env.SUPABASE_TOKEN;if(!t)return NextResponse.json({error:'Token not configured'},{status:500});const res=await fetch(`${B}/${params.taskId}`,{headers:{'Authorization':`Bearer ${t}`}});if(!res.ok){return NextResponse.json({id:params.taskId,status:res.status===404?'not_found':'error'})}const d=await res.json();return NextResponse.json({id:params.taskId,status:d.status,video_url:d.video_url||d.url,progress:d.progress||0})}catch(err:any){return NextResponse.json({id:params.taskId,status:'error',error:err.message})}}

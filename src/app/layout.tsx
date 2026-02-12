@@ -1,5 +1,1 @@
-import './globals.css'
-export const metadata = { title: 'Text2Video 2026 Fixed' }
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="zh-TW"><body>{children}</body></html>
-}
+import"./globals.css";export const metadata={title:"Text2Video 2026"};export default function RootLayout({children}:{children:React.ReactNode}){return<html lang="zh-TW"><body>{children}</body></html>}
